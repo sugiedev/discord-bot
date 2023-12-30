@@ -1,7 +1,7 @@
 require("dotenv").config();
 require("./deploy-commands.js").deployCommands();
 const { Client, Events, GatewayIntentBits, Partials } = require("discord.js");
-const { TOKEN } = require("./const.js");
+const { TOKEN, NOTICE_USER_ID } = require("./const.js");
 const admin = require("firebase-admin");
 const tallyFile = require("./commands/tally.js");
 const addMessage = require("./firebase/addMessage.js");
@@ -56,7 +56,7 @@ client.on("messageCreate", async (message) => {
   // }
 
   try {
-    await addMessage(message.id, {
+    const data = {
       guildId: message.guildId,
       guildName: message.guild?.name,
       channelId: message.channel.id,
@@ -67,8 +67,20 @@ client.on("messageCreate", async (message) => {
       messageId: message.id,
       message: message.content,
       isValid: true,
-    });
-    await message.react("✅");
+    };
+
+    await addMessage(message.id, data);
+    await message.react("👀");
+
+    const msgLink = `https://discord.com/channels/${data.guildId}/${data.channelId}/${data.messageId}`;
+    client.users.cache.get(NOTICE_USER_ID).send(`
+      \`WAVE職員の書き込みがありました。\`
+      サーバー: ${data.guildName}
+      チャンネル: ${data.channelName}
+      ユーザー: ${data.username}
+      内容: ${data.message}
+      リンク: ${msgLink}
+    `);
   } catch (e) {
     await message.author.send(`
           ## エラー

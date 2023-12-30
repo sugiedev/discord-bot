@@ -35,18 +35,51 @@ module.exports = {
         return;
       }
 
-      const createdChannel = await interaction.guild.channels.create({
-        type: ChannelType.GuildText,
-        name: `集計_${date}`,
-        parent: TALLY_CHANNEL_ID,
-      });
-
-      await createdChannel.send(messages[0]?.messageId);
-
-      // await interaction.reply({
-      //   content: `チャンネル「${createdChannel.name}」を作成しました。`,
-      //   // ephemeral: true,
+      // const createdChannel = await interaction.guild.channels.create({
+      //   type: ChannelType.GuildText,
+      //   name: `集計_${date}`,
+      //   parent: TALLY_CHANNEL_ID,
       // });
+      const tallyChannel = interaction.guild.channels.cache.get(
+        "1190502061893222530"
+      );
+
+      // let r = [`\`【${date}_社内メッセージ集計】\``];
+
+      // // guildId: message.guildId,
+      // // guildName: message.guild?.name,
+      // // channelId: message.channel.id,
+      // // channelName: message.channel.name,
+      // // userId: message.author.id,
+      // // username: message.author.username,
+      // // createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      // // messageId: message.id,
+      // // message: message.content,
+      // // isValid: true,
+
+      // const msg = messages.map((m) => {
+      //   const msgLink = `https://discord.com/channels/${m.guildId}/${m.channelId}/${m.messageId}`;
+      //   return `
+      //   ${m.username}
+      //   ${msgLink}
+      //   `;
+      // });
+
+      // await tallyChannel.send(t);
+
+      let r = [`\`【${date}_社内メッセージ集計】\``];
+
+      const msg = messages.map((m) => {
+        const msgLink = `https://discord.com/channels/${m.guildId}/${m.channelId}/${m.messageId}`;
+        return `${m.username}\n${msgLink}`;
+      });
+      r = r.concat(msg);
+      const finalMessage = r.join("\n");
+      await tallyChannel.send(finalMessage);
+
+      await interaction.reply({
+        content: `チャンネル「${tallyChannel.name}」に${date}の集計を行いました`,
+      });
     } catch (error) {
       console.error(error);
       await interaction.reply("チャンネルの作成中にエラーが発生しました。");

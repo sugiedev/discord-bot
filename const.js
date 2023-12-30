@@ -4,4 +4,5 @@ module.exports = {
   GUILD_ID,
   FIREBASE_SERVICE_ACCOUNT_KEY,
   TALLY_CHANNEL_ID,
+  NOTICE_USER_ID,
 } = process.env;
