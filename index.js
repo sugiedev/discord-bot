@@ -88,7 +88,7 @@ client.on("messageCreate", async (message) => {
           チャンネル: ${client.channels.cache.get(message.channelId)}
           ログ: \`${e.message}\`
           `);
-    await message.react("❎");
+    await message.react("👀");
   }
 });
 

@@ -3,9 +3,7 @@ const { getFirestore } = require('firebase-admin/firestore')
 
 if (!getApps()?.length) {
   initializeApp({
-    credential: cert(
-      JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY)
-    ) 
+    credential: cert(require("./config.json")) 
   })
 }
 
